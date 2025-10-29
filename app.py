@@ -30,12 +30,12 @@ page = st.sidebar.selectbox("Pilih Halaman", ["Tentang Saya", "Proyek Saya", "Pr
 if page == "Tentang Saya":
     st.header("Tentang Saya")
     st.markdown("""
-- **Nama:** Nama Anda
+- **Nama:** Rusdi Ahmad
 - **Latar Belakang:** S2 Matematika / Data Science / dsb
 - **Keahlian:** Python, Machine Learning, Data Visualization, Streamlit
 """)
     st.subheader("Kontak")
-    st.write("Email: your.email@example.com")
+    st.write("Email: rusdiahmad979@gmail.com")
     st.write("LinkedIn: https://www.linkedin.com/in/your-profile")
 
 # -----------------------
