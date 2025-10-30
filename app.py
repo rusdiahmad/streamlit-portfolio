@@ -1,4 +1,4 @@
-# app.py (Final Revised Version)
+# app.py - Portofolio Streamlit Rusdi Ahmad
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -9,33 +9,33 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Konfigurasi halaman
-st.set_page_config(page_title="Rusdi Ahmad Portfolio", layout="wide")
+# Konfigurasi tampilan halaman
+st.set_page_config(page_title="Portofolio Streamlit - Rusdi Ahmad", layout="wide")
 
-# Sidebar navigasi
+# Menu navigasi di sidebar
 menu = st.sidebar.radio(
-    "Navigation Menu",
-    ["🏠 Home", "👤 About Me", "💼 My Projects", "📊 Visualization & Model"]
+    "Menu Navigasi",
+    ["🏠 Beranda", "👤 Tentang Saya", "💼 Proyek Saya", "📊 Visualisasi & Prediksi"]
 )
 
 # =============================
-# 🏠 1. HOME PAGE
+# 🏠 BERANDA
 # =============================
-if menu == "🏠 Home":
-    st.title("🌐 Rusdi Ahmad — Streamlit Portfolio Project")
+if menu == "🏠 Beranda":
+    st.title("🌐 Portofolio Streamlit — Rusdi Ahmad")
     st.markdown("---")
     st.markdown("""
-    ### 👋 Welcome!
-    This web application was created as part of the **Streamlit Portfolio Assignment**.
- 
+    Selamat datang di situs portofolio saya 👋  
+    Melalui aplikasi ini, Anda dapat mengenal latar belakang saya, melihat beberapa proyek yang pernah saya kerjakan, 
+    serta mencoba model prediksi sederhana yang dapat dijalankan langsung di sini.
     """)
-
+    st.info("Gunakan menu di sebelah kiri untuk menjelajahi halaman lainnya ➡️")
 
 # =============================
-# 👤 2. ABOUT ME
+# 👤 TENTANG SAYA
 # =============================
-elif menu == "👤 About Me":
-    st.header("👨‍🏫 About Me")
+elif menu == "👤 Tentang Saya":
+    st.header("👨‍🏫 Tentang Saya")
     st.markdown("---")
 
     col1, col2 = st.columns([1, 2])
@@ -44,40 +44,40 @@ elif menu == "👤 About Me":
     with col2:
         st.subheader("Rusdi Ahmad, M.Sc.")
         st.markdown("""
-        - 🎓 **Education:** Master of Mathematics — Universitas Andalas (UNAND)
-        - 🏠 **Location:** Bogor, Indonesia
-        - 💼 **Profession:** Mathematics Educator & Data Science Enthusiast
-        - 🧠 **Skills:** Mathematics • Data Science • Machine Learning • Streamlit
+        - 🎓 **Pendidikan:** Magister Matematika — Universitas Andalas (UNAND)  
+        - 🏠 **Domisili:** Kota Bogor, Indonesia  
+        - 💼 **Profesi:** Pendidik Matematika & Penggiat Data  
+        - 🧠 **Keahlian:** Matematika • Statistika • Machine Learning • Streamlit
         """)
     st.write("📧 Email: rusdiahmad979@gmail.com")
     st.write("🔗 LinkedIn: [linkedin.com/in/rusdi-ahmad-a2948a1a4](https://www.linkedin.com/in/rusdi-ahmad-a2948a1a4)")
 
     st.markdown("---")
     st.subheader("💡 Motto")
-    st.write("*“Mathematics is the language of science — Streamlit makes it visible.”*")
+    st.write("*“Matematika adalah bahasa sains — dan Streamlit membuatnya terlihat nyata.”*")
 
 # =============================
-# 💼 3. MY PROJECTS
+# 💼 PROYEK SAYA
 # =============================
-elif menu == "💼 My Projects":
-    st.header("💼 My Projects")
+elif menu == "💼 Proyek Saya":
+    st.header("💼 Proyek Saya")
     st.markdown("---")
 
     projects = [
         {
-            "title": "📊 UTBK Score Analysis Dashboard",
-            "desc": "An interactive dashboard that explores UTBK student data to analyze performance patterns and success factors.",
+            "title": "📊 Analisis Nilai UTBK Siswa",
+            "desc": "Dashboard interaktif untuk menganalisis distribusi nilai UTBK serta faktor yang memengaruhi keberhasilan siswa.",
             "tags": "Python • Streamlit • Data Visualization"
         },
         {
-            "title": "🏨 Hotel Booking Cancellation Prediction",
-            "desc": "A simple machine learning model to predict hotel booking cancellations using RandomForest.",
-            "tags": "Machine Learning • EDA • Classification"
+            "title": "🏨 Prediksi Pembatalan Reservasi Hotel",
+            "desc": "Model machine learning untuk memprediksi pembatalan reservasi menggunakan algoritma Random Forest.",
+            "tags": "Machine Learning • EDA • Klasifikasi"
         },
         {
-            "title": "📘 Student Performance Analytics",
-            "desc": "A visual analysis of student grades to identify key improvement areas in learning outcomes.",
-            "tags": "Education • Analytics • Data Storytelling"
+            "title": "📘 Analisis Kinerja Akademik Siswa",
+            "desc": "Visualisasi data nilai siswa untuk menemukan pola performa dan strategi peningkatan hasil belajar.",
+            "tags": "Pendidikan • Analisis Data • Visualisasi"
         }
     ]
 
@@ -88,39 +88,39 @@ elif menu == "💼 My Projects":
         st.markdown("---")
 
 # =============================
-# 📊 4. VISUALIZATION & MODEL
+# 📊 VISUALISASI & PREDIKSI
 # =============================
-elif menu == "📊 Visualization & Model":
-    st.header("📈 Data Visualization & Prediction Model")
+elif menu == "📊 Visualisasi & Prediksi":
+    st.header("📈 Visualisasi Data & Model Prediksi")
     st.markdown("---")
     st.markdown("""
-    Upload your CSV dataset below to visualize its distribution and, if applicable, train or test a simple prediction model.
+    Unggah file CSV untuk menampilkan **visualisasi sederhana** serta menjalankan **model prediksi regresi**.
+    Jika dataset memiliki kolom `SalePrice`, sistem akan mengenalinya sebagai variabel target.
     """)
 
-    uploaded = st.file_uploader("📤 Upload CSV file", type=["csv"])
+    uploaded = st.file_uploader("📤 Unggah file CSV Anda di sini", type=["csv"])
     model_path = Path("trained_model.pkl")
 
     if uploaded is not None:
         df = pd.read_csv(uploaded)
-        st.success("✅ File uploaded successfully!")
-        st.subheader("📋 Data Preview")
+        st.success("✅ File berhasil diunggah!")
+        st.subheader("📋 Cuplikan Data")
         st.dataframe(df.head())
 
+        # Visualisasi kolom numerik
         numeric_cols = list(df.select_dtypes(include=[np.number]).columns)
         if numeric_cols:
-            st.subheader("📊 Numeric Feature Visualization")
-
-            # Histogram
-            feature = st.selectbox("Select a numeric column to visualize:", numeric_cols)
+            st.subheader("📊 Visualisasi Kolom Numerik")
+            feature = st.selectbox("Pilih kolom numerik untuk ditampilkan:", numeric_cols)
             fig, ax = plt.subplots()
             ax.hist(df[feature].dropna(), bins=20)
             ax.set_xlabel(feature)
-            ax.set_ylabel("Frequency")
-            ax.set_title(f"Distribution of {feature}")
+            ax.set_ylabel("Frekuensi")
+            ax.set_title(f"Distribusi {feature}")
             st.pyplot(fig)
 
             # Korelasi
-            if st.checkbox("Show correlation heatmap"):
+            if st.checkbox("Tampilkan heatmap korelasi"):
                 corr = df[numeric_cols].corr()
                 fig2, ax2 = plt.subplots(figsize=(6, 5))
                 im = ax2.imshow(corr, cmap="coolwarm", interpolation="nearest")
@@ -130,13 +130,13 @@ elif menu == "📊 Visualization & Model":
                 ax2.set_yticklabels(numeric_cols)
                 st.pyplot(fig2)
         else:
-            st.warning("No numeric columns found in this dataset.")
+            st.warning("Tidak ada kolom numerik yang ditemukan dalam dataset.")
 
         st.markdown("---")
-        st.subheader("🧮 Train or Use Prediction Model")
+        st.subheader("🤖 Model Machine Learning")
 
         if "SalePrice" in df.columns:
-            if st.button("Train Model (RandomForest)"):
+            if st.button("Latih Model (RandomForest)"):
                 X = df.select_dtypes(include=[np.number]).drop(columns=["SalePrice"], errors="ignore").fillna(0)
                 y = df["SalePrice"]
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -146,30 +146,30 @@ elif menu == "📊 Visualization & Model":
 
                 rmse = mean_squared_error(y_test, preds, squared=False)
                 r2 = r2_score(y_test, preds)
-                st.success(f"Model trained successfully! RMSE = {rmse:.2f}, R² = {r2:.3f}")
+                st.success(f"Model berhasil dilatih! RMSE = {rmse:.2f}, R² = {r2:.3f}")
 
                 with open(model_path, "wb") as f:
                     pickle.dump(model, f)
-                st.info("Model saved as 'trained_model.pkl'")
+                st.info("Model disimpan sebagai 'trained_model.pkl'")
 
-        if st.button("Run Prediction using existing model"):
+        if st.button("Jalankan Prediksi (gunakan model yang ada)"):
             if model_path.exists():
                 with open(model_path, "rb") as f:
                     model = pickle.load(f)
                 X_pred = df.select_dtypes(include=[np.number]).fillna(0)
                 preds = model.predict(X_pred)
-                df["Prediction"] = preds
-                st.success("Prediction completed!")
+                df["Hasil_Prediksi"] = preds
+                st.success("Prediksi berhasil dijalankan!")
                 st.dataframe(df.head())
-                st.download_button("Download Results", df.to_csv(index=False), "predictions.csv")
+                st.download_button("Unduh Hasil Prediksi", df.to_csv(index=False), "hasil_prediksi.csv")
             else:
-                st.warning("No model found. Please train a model first.")
+                st.warning("Model belum tersedia. Silakan latih model terlebih dahulu.")
 
     else:
-        st.info("Please upload a CSV file to start visualization or prediction.")
+        st.info("Silakan unggah file CSV untuk memulai analisis dan prediksi.")
 
 # =============================
 # Footer
 # =============================
 st.sidebar.write("---")
-st.sidebar.caption("📘 Created by Rusdi Ahmad — Streamlit Portfolio Project 2025")
+st.sidebar.caption("📘 Rusdi Ahmad • Portofolio Streamlit 2025")
