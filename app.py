@@ -29,9 +29,7 @@ if menu == "🏠 Home":
     This web application was created as part of the **Streamlit Portfolio Assignment**.
     You can explore my background, data projects, and even run a simple Machine Learning model for prediction.
 
-    💡 *All built online using Streamlit Cloud — no installation required!*
-    """)
-    st.info("Navigate using the sidebar menu to explore all sections ➡️")
+    
 
 # =============================
 # 👤 2. ABOUT ME
