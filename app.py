@@ -2,194 +2,173 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
-from pathlib import Path
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
+import pickle
+from pathlib import Path
 
-st.set_page_config(page_title="My Portfolio with Streamlit", layout="wide")
+# Konfigurasi halaman
+st.set_page_config(page_title="Rusdi Ahmad Portfolio", layout="wide")
 
-# -----------------------
-# Header / Branding
-# -----------------------
-st.title("My Portfolio with Streamlit")
-st.markdown("""
-Selamat datang di portofolio saya. Di sini saya menampilkan profil singkat, beberapa proyek, dan halaman untuk melakukan prediksi menggunakan model ML sederhana.
-""")
+# Sidebar navigasi
+menu = st.sidebar.radio(
+    "Navigation Menu",
+    ["🏠 Home", "👤 About Me", "💼 My Projects", "📈 Visualization & Prediction"]
+)
 
-# -----------------------
-# Sidebar navigation
-# -----------------------
-page = st.sidebar.selectbox("Pilih Halaman", ["Tentang Saya", "Proyek Saya", "Prediksi (Upload CSV)", "Visualisasi & Model"])
-
-# -----------------------
-# Tentang Saya
-# -----------------------
-if page == "Tentang Saya":
-    st.header("Tentang Saya")
+# =============================
+# 🏠 1. HOME PAGE
+# =============================
+if menu == "🏠 Home":
+    st.title("Welcome to My Streamlit Portfolio 🌐")
+    st.write("---")
     st.markdown("""
-- **Nama:** Rusdi Ahmad
-- **Latar Belakang:** S2 Matematika / Data Science / dsb
-- **Keahlian:** Python, Machine Learning, Data Visualization, Streamlit
-""")
-    st.subheader("Kontak")
-    st.write("Email: rusdiahmad979@gmail.com")
-    st.write("LinkedIn: https://www.linkedin.com/in/your-profile")
+    ### 👋 Hello Everyone!
+    This web app is created as part of my **Streamlit Portfolio Project**.
+    Here, you can explore my background, view my data projects, and even run your own prediction using a simple ML model.  
+    Aplikasi ini dibuat untuk memenuhi **tugas pembuatan portofolio Streamlit**, sesuai petunjuk pada modul tugas.
+    """)
+    st.info("Use the sidebar to navigate through the pages 👉")
 
-# -----------------------
-# Proyek Saya
-# -----------------------
-elif page == "Proyek Saya":
-    st.header("Proyek Saya")
+# =============================
+# 👤 2. ABOUT ME
+# =============================
+elif menu == "👤 About Me":
+    st.header("👨‍🏫 About Me")
+    st.write("---")
+
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=180)
+    with col2:
+        st.subheader("Rusdi Ahmad, M.Si.")
+        st.markdown("""
+        - 🎓 **Education:** Master of Mathematics (UNAND)  
+        - 📍 **Location:** Bogor, Indonesia  
+        - 💼 **Occupation:** Mathematics Educator & Data Enthusiast  
+        - 🧠 **Expertise:** Mathematics, Statistics, Data Science, and Machine Learning  
+        """)
+    st.write("✉️ Email: rusdiahmad979@gmail.com")
+    st.write("🔗 LinkedIn: [linkedin.com/in/rusdi-ahmad-a2948a1a4](https://www.linkedin.com/in/rusdi-ahmad-a2948a1a4)")
+
+    st.write("---")
+    st.subheader("🧩 Skills & Tools")
+    st.markdown("""
+    - Python (Pandas, NumPy, Scikit-learn)
+    - Data Visualization (Matplotlib, Streamlit)
+    - Statistical Analysis & Modeling
+    - Education & Mathematical Problem Solving
+    """)
+
+# =============================
+# 💼 3. MY PROJECTS
+# =============================
+elif menu == "💼 My Projects":
+    st.header("💼 Featured Projects")
+    st.write("---")
+
     projects = [
         {
-            "title": "Analisis Harga Rumah (Regression)",
-            "desc": "Membangun model prediksi harga rumah, EDA, dan deployment menggunakan Streamlit.",
-            "img": None
+            "title": "1️⃣ UTBK Score Analysis Dashboard",
+            "desc": "Interactive dashboard analyzing UTBK student data to explore score distributions and success factors.",
+            "tags": "Python • Streamlit • Data Analysis"
         },
         {
-            "title": "Dashboard Analisis Penjualan",
-            "desc": "Dashboard interaktif untuk analisis penjualan dengan filter & visualisasi.",
-            "img": None
+            "title": "2️⃣ Hotel Booking Cancellation Prediction",
+            "desc": "Predicting hotel booking cancellations using RandomForest — includes EDA, preprocessing, and model evaluation.",
+            "tags": "Machine Learning • EDA • Classification"
         },
         {
-            "title": "Klasifikasi Kualitas Produk",
-            "desc": "Model klasifikasi untuk mengidentifikasi produk berkualitas vs tidak.",
-            "img": None
-        },
+            "title": "3️⃣ Student Performance Analytics",
+            "desc": "Visualizing student academic data to identify performance trends and improvement strategies.",
+            "tags": "Data Visualization • Education • Analytics"
+        }
     ]
 
     for p in projects:
         st.subheader(p["title"])
         st.write(p["desc"])
-        if p["img"]:
-            st.image(p["img"], use_column_width=True)
+        st.caption(p["tags"])
         st.markdown("---")
 
-# -----------------------
-# Prediksi: Upload CSV dan Trigger
-# -----------------------
-elif page == "Prediksi (Upload CSV)":
-    st.header("Halaman Prediksi")
-    st.write("Unggah file CSV berisi fitur yang diperlukan untuk melakukan prediksi harga (atau gunakan contoh).")
-    uploaded_file = st.file_uploader("Unggah CSV (header wajib)", type=["csv"])
+# =============================
+# 📈 4. VISUALIZATION & PREDICTION
+# =============================
+elif menu == "📈 Visualization & Prediction":
+    st.header("📊 Data Visualization & Prediction Model")
+    st.write("---")
 
-    model_path = Path("trained_model.pkl")
+    uploaded = st.file_uploader("📤 Upload your CSV file here", type=["csv"])
+    model_path = Path("simple_model.pkl")
 
-    # Load model jika ada
-    model = None
-    if model_path.exists():
-        try:
-            with open(model_path, "rb") as f:
-                model = pickle.load(f)
-            st.success("Model pra-latih ditemukan dan dimuat.")
-        except Exception as e:
-            st.warning("Gagal memuat model pra-latih: " + str(e))
-
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.write("Preview data:")
-        st.dataframe(df.head())
-
-        # asumsi kolom target bernama 'SalePrice' (jika ada)
-        if "SalePrice" in df.columns:
-            st.info("File mengandung kolom 'SalePrice'. Aplikasi ini akan menggunakan kolom ini saat melatih/mengevaluasi model.")
-        # Tombol untuk trigger pipeline
-        if st.button("Trigger: Train & Predict (jika belum ada model)"):
-            with st.spinner("Menjalankan pipeline..."):
-                # Jika model belum ada, latih sederhana gunakan kolom numerik saja
-                if model is None:
-                    st.write("Melatih model RandomForest sederhana dari data yang Anda unggah (menggunakan kolom numerik).")
-                    data = df.copy()
-                    if "SalePrice" not in data.columns:
-                        st.error("Dataset harus berisi kolom target 'SalePrice' untuk pelatihan. Jika file hanya berisi fitur input untuk prediksi, gunakan fitur 'Predict only' di bawah.")
-                    else:
-                        y = data["SalePrice"].values
-                        X = data.select_dtypes(include=[np.number]).drop(columns=["SalePrice"], errors="ignore")
-                        X = X.fillna(X.median())
-                        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-                        rf = RandomForestRegressor(n_estimators=100, random_state=42)
-                        rf.fit(X_train, y_train)
-                        preds = rf.predict(X_test)
-                        rmse = mean_squared_error(y_test, preds, squared=False)
-                        mae = mean_absolute_error(y_test, preds)
-                        r2 = r2_score(y_test, preds)
-
-                        st.success("Pelatihan selesai.")
-                        st.write(f"RMSE: {rmse:.2f}, MAE: {mae:.2f}, R2: {r2:.3f}")
-
-                        # Simpan model
-                        with open(model_path, "wb") as f:
-                            pickle.dump(rf, f)
-                        model = rf
-                        st.info("Model tersimpan sebagai 'trained_model.pkl' (di repository server).")
-                else:
-                    st.info("Model sudah ada — langsung dipakai untuk prediksi.")
-
-        st.markdown("### Predict only (pakai model yang sudah ada)")
-        if st.button("Jalankan Prediksi pada file ini (pakai model jika ada)"):
-            if model is None:
-                st.error("Tidak ada model tersedia. Silakan tekan 'Trigger: Train & Predict' dahulu atau upload model pra-latih.")
-            else:
-                X_pred = df.select_dtypes(include=[np.number]).fillna(0)
-                preds = model.predict(X_pred)
-                df_out = df.copy()
-                df_out["prediction"] = preds
-                st.write("Hasil prediksi (preview):")
-                st.dataframe(df_out.head())
-                st.download_button("Download hasil prediksi (CSV)", df_out.to_csv(index=False), file_name="predictions.csv")
-
-# -----------------------
-# Visualisasi & Model
-# -----------------------
-elif page == "Visualisasi & Model":
-    st.header("Visualisasi Data & Performa Model")
-    st.write("Anda dapat mengunggah dataset untuk EDA atau melihat performa model yang tersimpan.")
-
-    uploaded = st.file_uploader("Unggah CSV untuk EDA (opsional)", type=["csv"], key="eda")
     if uploaded is not None:
         df = pd.read_csv(uploaded)
-        st.subheader("Preview dataset")
+        st.success("✅ File successfully uploaded!")
+        st.subheader("Preview of Data")
         st.dataframe(df.head())
 
-        # Distribusi salah satu fitur numerik (pilih)
+        # Visualisasi distribusi kolom numerik
         numeric_cols = list(df.select_dtypes(include=[np.number]).columns)
         if numeric_cols:
-            col = st.selectbox("Pilih fitur numerik untuk melihat distribusi", numeric_cols)
-            bins = st.slider("Jumlah bins (histogram)", 5, 100, 30)
+            st.subheader("📊 Feature Distribution")
+            selected_col = st.selectbox("Select a numeric column to visualize:", numeric_cols)
             fig, ax = plt.subplots()
-            ax.hist(df[col].dropna(), bins=bins)
-            ax.set_title(f"Distribusi {col}")
+            ax.hist(df[selected_col].dropna(), bins=20)
+            ax.set_title(f"Distribution of {selected_col}")
             st.pyplot(fig)
 
-            # Korelasi (heatmap sederhana)
-            if st.checkbox("Tampilkan korelasi (heatmap sederhana)"):
-                corr = df[numeric_cols].corr()
-                fig2, ax2 = plt.subplots(figsize=(6, 5))
-                im = ax2.imshow(corr, interpolation='nearest')
-                ax2.set_xticks(range(len(numeric_cols)))
-                ax2.set_xticklabels(numeric_cols, rotation=45, ha='right')
-                ax2.set_yticks(range(len(numeric_cols)))
-                ax2.set_yticklabels(numeric_cols)
-                st.pyplot(fig2)
-        else:
-            st.info("Tidak ditemukan kolom numerik di dataset ini.")
+        # Korelasi sederhana
+        if st.checkbox("Show correlation heatmap"):
+            corr = df[numeric_cols].corr()
+            fig, ax = plt.subplots(figsize=(6, 5))
+            im = ax.imshow(corr, cmap="coolwarm", interpolation="nearest")
+            ax.set_xticks(range(len(numeric_cols)))
+            ax.set_xticklabels(numeric_cols, rotation=45, ha="right")
+            ax.set_yticks(range(len(numeric_cols)))
+            ax.set_yticklabels(numeric_cols)
+            st.pyplot(fig)
 
-    st.markdown("---")
-    st.subheader("Performa model (jika ada)")
-    if model_path.exists():
-        try:
-            with open(model_path, "rb") as f:
-                mdl = pickle.load(f)
-            st.success("Model dimuat dari server.")
-            st.write("Model: ", type(mdl).__name__)
-            st.info("Jika Anda ingin melihat learning curve/metrics, latih model lokal dengan data kemudian upload file log/metrics atau modifikasi kode sesuai kebutuhan.")
-        except Exception as e:
-            st.error("Gagal memuat model: " + str(e))
+        # Pelatihan model sederhana
+        if "SalePrice" in df.columns:
+            st.subheader("🧮 Train Simple Regression Model")
+            if st.button("Train RandomForest Model"):
+                X = df.select_dtypes(include=[np.number]).drop(columns=["SalePrice"], errors="ignore").fillna(0)
+                y = df["SalePrice"]
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                model = RandomForestRegressor(n_estimators=100, random_state=42)
+                model.fit(X_train, y_train)
+                preds = model.predict(X_test)
+                rmse = mean_squared_error(y_test, preds, squared=False)
+                r2 = r2_score(y_test, preds)
+                st.success(f"Model trained successfully! RMSE = {rmse:.2f}, R² = {r2:.3f}")
+
+                # Save model
+                with open(model_path, "wb") as f:
+                    pickle.dump(model, f)
+                st.info("Model saved to simple_model.pkl")
+
+        # Prediksi (jika model sudah ada)
+        if st.button("Run Prediction using existing model"):
+            if model_path.exists():
+                with open(model_path, "rb") as f:
+                    model = pickle.load(f)
+                X_pred = df.select_dtypes(include=[np.number]).fillna(0)
+                preds = model.predict(X_pred)
+                df["Prediction"] = preds
+                st.success("Prediction completed!")
+                st.dataframe(df.head())
+                st.download_button("Download Prediction Result", df.to_csv(index=False), "predictions.csv")
+            else:
+                st.warning("No trained model found. Please train model first.")
+
     else:
-        st.info("Belum ada model tersimpan. Gunakan halaman 'Prediksi' untuk melatih dan menyimpan model sederhana.")
+        st.info("Please upload a CSV file to start analysis or prediction.")
 
+# =============================
 # Footer
-st.sidebar.write("Guidance: Untuk tugas, sertakan link GitHub repo dan link deploy Streamlit pada LMS.")
+# =============================
+st.sidebar.write("---")
+st.sidebar.caption("Created by Rusdi Ahmad • Streamlit Portfolio Project 2025")
+
