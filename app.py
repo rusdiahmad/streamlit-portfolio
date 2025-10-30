@@ -28,9 +28,8 @@ if menu == "🏠 Home":
     ### 👋 Hello Everyone!
     This web app is created as part of my **Streamlit Portfolio Project**.
     Here, you can explore my background, view my data projects, and even run your own prediction using a simple ML model.  
-    Aplikasi ini dibuat untuk memenuhi **tugas pembuatan portofolio Streamlit**, sesuai petunjuk pada modul tugas.
-    """)
-    st.info("Use the sidebar to navigate through the pages 👉")
+        """)
+
 
 # =============================
 # 👤 2. ABOUT ME
